@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Backend-independent Thoth.Json.Core codecs for Fable.NodaTime.</Description>
+    <ChangelogFile>$(MSBuildThisFileDirectory)../../CHANGELOG.md</ChangelogFile>
+    <PackageReadmeFile>thoth.md</PackageReadmeFile>
+    <FablePackageType>library</FablePackageType>
+    <PackageTags>fable-dotnet;fable-javascript;datetime;nodatime;thoth;json</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Fable.NodaTime/Fable.NodaTime.fsproj" />
+    <PackageReference Include="Thoth.Json.Core" Version="0.10.1" />
+    <PackageReference Include="Thoth.Json.Core.Auto" Version="0.2.0" />
+    <PackageReference Include="Fable.Package.SDK" Version="1.4.1" PrivateAssets="all" />
+    <PackageReference Include="Ionide.KeepAChangelog.Tasks" Version="0.4.0" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Codecs.fs" />
+    <None Include="../../docs/thoth.md" Pack="true" PackagePath="/" />
+    <None Include="../../CHANGELOG.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

@@ -6,10 +6,12 @@
     "build:js": "dotnet fable tests/Fable.NodaTime.Tests --outDir build/js",
     "test:dotnet": "dotnet run --project tests/Fable.NodaTime.Tests",
     "test:js": "pnpm run build:js && node --import temporal-polyfill/global build/js/Tests.js",
-    "test": "pnpm run test:dotnet && pnpm run test:js",
+    "test:serialization": "node scripts/test-serialization.mjs && pnpm run test:typed-json",
+    "test:typed-json": "node scripts/test-serialization.mjs tests/TypedJson tests/TypedJsonJavaScript build/typed-json-js TypedJson/Tests.js artifacts/typed-json",
+    "test": "pnpm run test:dotnet && pnpm run test:js && pnpm run test:serialization",
     "test:package": "node scripts/test-package.mjs",
-    "format": "dotnet fantomas src/Fable.NodaTime/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs",
-    "format:check": "dotnet fantomas src/Fable.NodaTime/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs --check"
+    "format": "dotnet fantomas src/Fable.NodaTime/*.fs src/Fable.NodaTime.Thoth/*.fs src/Fable.NodaTime.TypedJson/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs examples/Serialization/*.fs tests/Serialization/Tests.fs tests/TypedJson/Tests.fs",
+    "format:check": "dotnet fantomas src/Fable.NodaTime/*.fs src/Fable.NodaTime.Thoth/*.fs src/Fable.NodaTime.TypedJson/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs examples/Serialization/*.fs tests/Serialization/Tests.fs tests/TypedJson/Tests.fs --check"
   },
   "packageManager": "pnpm@10.32.1",
   "devDependencies": {

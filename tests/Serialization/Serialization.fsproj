@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Fable.NodaTime.Thoth/Fable.NodaTime.Thoth.fsproj" />
+    <PackageReference Include="Thoth.Json.System.Text.Json" Version="0.5.0" />
+    <PackageReference Include="Fable.Remoting.Json" Version="3.0.0" />
+    <PackageReference Include="FSharp.SystemTextJson" Version="1.4.36" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../examples/Serialization/Remoting.fs" Link="Remoting.fs" />
+    <Compile Include="Tests.fs" />
+  </ItemGroup>
+</Project>

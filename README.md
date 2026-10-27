@@ -43,11 +43,8 @@ and `TemporalConversions` in client code to access the underlying Temporal value
 The client must provide Temporal before its compiled application loads, as described below. Inject `IClock` for rules
 that depend on the current time; use `Clocks.fixedClock` in tests.
 
-Shared domain values are not an automatic transport contract. For API requests,
-responses, or persistence, use string fields produced by `format` and validate
-with `tryParse` when receiving them, or supply equivalent explicit serializer
-codecs. This library does not provide Fable.Remoting, Thoth, or System.Text.Json
-integration. Do not assume default union serialization preserves its invariants.
+For API requests, responses, or persistence, follow the
+[serialization guide for your library](#serialization).
 
 The [SharedScheduling example](examples/SharedScheduling/Schedule.fs) is compiled
 and tested on both runtimes. A complete SAFE application, browser startup, and
@@ -57,7 +54,15 @@ or clocks differ; let the server decide authoritative scheduling outcomes.
 
 ## Use
 
-Reference `src/Fable.NodaTime/Fable.NodaTime.fsproj`. The JavaScript backend reads
+The library targets .NET 10 and Fable JavaScript.
+
+Install [Fable.NodaTime](https://www.nuget.org/packages/Fable.NodaTime) in your shared project:
+
+```sh
+dotnet add Shared/Shared.fsproj package Fable.NodaTime
+```
+
+The JavaScript backend reads
 `globalThis.Temporal` through Fable.Temporal. The library does not import a polyfill
 or modify globals; the application chooses the implementation.
 
@@ -155,7 +160,7 @@ No row implies complete NodaTime API or source compatibility.
 | Native NodaTime conversions | .NET only | `toX` / `fromX` for supported types. Reject non-ISO/out-of-range values and zones that do not equal the TZDB zone for their ID. Duration conversion is range-limited. |
 | Native Temporal conversions | Fable only | `toX` / `fromX`; locals map to Plain types and zones to ID strings. Reject non-ISO/out-of-range values and numeric offset zones. Durations accept only time components (no calendar days), with exactness/range checks on output. |
 | Error behavior | Partial | `tryParse`, `tryFind`, and `tryResolve` return the library's `TimeError`; other operations throw. Native exception classes/messages and NodaTime ParseResult are not mirrored. |
-| Serialization integrations | Not supported | Portable string formats are provided, but no automatic JSON codecs, Fable.Remoting integration, database mappings, or native union wire contract. |
+| Serialization integrations | Partial | System.Text.Json converters, optional Thoth and TypedJson packages, and typed DTOs for Fable.Remoting. See [Serialization](#serialization) for setup. |
 | NodaTime source compatibility | Not supported | Qualified F# modules and opaque shared values; existing code that opens NodaTime is not a drop-in client implementation. |
 | End-to-end SAFE/browser integration | Not verified | Shared rules and package consumers are tested on .NET and Node using `temporal-polyfill`. No full SAFE app, browser matrix, or native-Temporal test matrix is included. |
 
@@ -231,27 +236,16 @@ resolved instant and zone for an occurrence, or local time, zone, and resolver
 for a recurring schedule. Resolve authoritatively on the server when identical
 results across database versions are essential.
 
-## Serialization and errors
+## Serialization
 
-Use `format` / `parse`, not default union serialization. JSON fields should be
-strings, including durations:
+Choose the guide for your serializer:
 
-```text
-Instant        2024-01-01T00:00:00.123456789Z
-LocalDate      2024-01-01
-LocalTime      12:34:56.123456789
-LocalDateTime  2024-01-01T12:34:56.123456789
-Duration       -9007199254740993
-ZonedDateTime  2024-11-03T06:30:00.000000000Z[America/New_York]
-```
+- [System.Text.Json](docs/system-text-json.md): register converters for your .NET models.
+- [Thoth](docs/thoth.md): use shared codecs from [Fable.NodaTime.Thoth](https://www.nuget.org/packages/Fable.NodaTime.Thoth).
+- [Fable.TypedJson](docs/typed-json.md): use a codec registry from [Fable.NodaTime.TypedJson](https://www.nuget.org/packages/Fable.NodaTime.TypedJson).
+- [Fable.Remoting](docs/remoting.md): use typed DTOs in your RPC records.
 
-Time-bearing output always has nine fractional digits; input accepts seconds
-with an optional 1–9 digit fraction. Instant input requires uppercase `T` and
-UTC `Z`; dates require four-digit years. Duration input is a decimal integer
-without a leading `+` or redundant zeros (`-0` normalizes to `0`). Zoned strings
-are the library's **UTC instant + zone** format, not Temporal's local-offset
-format; they preserve the exact overlap occurrence. Store a zone alone using
-`DateTimeZone.id` and read it using `find`.
+## Parsing and native conversions
 
 `tryParse`, `DateTimeZone.tryFind`, and `ZonedDateTime.tryResolve` return
 `Result<_, TimeError>`. Their convenience counterparts and arithmetic throw on
@@ -290,7 +284,7 @@ elapsed nanoseconds do.
 
 ## Development
 
-Requires .NET 10 SDK, .NET 8 runtime, Node 24+, and pnpm 10.32.1:
+Requires .NET 10 SDK, Node 24+, and pnpm 10.32.1:
 
 ```sh
 dotnet tool restore
@@ -303,10 +297,13 @@ pnpm run test:package
 
 The same F# behavioral tests run on .NET and Fable/Node, including DST transitions,
 precision, clipping, invalid inputs, boundaries, serialization, and the example.
-Each runtime additionally tests its native conversion module. Browser integration
-is not tested.
-`test:package` packs into a local feed and runs the suite through package references
-on both runtimes using an isolated cache. It publishes nothing. `pnpm run format`
+Each runtime additionally tests its native conversion module. `pnpm run
+test:serialization` exchanges actual JSON between .NET and JavaScript using
+System.Text.Json, Thoth, TypedJson, and Remoting's JSON serializers, and is included in
+`pnpm test`. Browser and HTTP integration are not tested.
+`test:package` packs all three libraries into a local feed and runs the core and
+serialization suites through package references on both runtimes using an
+isolated cache. It publishes nothing. `pnpm run format`
 formats the maintained F# sources with Fantomas.
 
 `Types.fs` defines opaque values and contracts. `Api.fs` owns portable validation,
@@ -314,12 +311,14 @@ composition, and serialization. The two `Backend.*.fs` files implement runtime
 operations; `NodaTime.fs` and `Temporal.fs` contain platform-specific conversions. Strings hold canonical ISO
 values, keeping equality and serialization identical without exposing runtime
 objects. Durations hold bigint nanoseconds. Backend choice is internal.
+`DTO.fs` provides typed transport records and inline generic conversions;
+`SystemTextJson.fs` registers .NET JSON converters. The separate
+`Fable.NodaTime.Thoth` and `Fable.NodaTime.TypedJson` projects supply optional codecs.
 
 Library dependencies are pinned: NodaTime 3.3.2 and Fable.Temporal 0.1.0.
 The test harness preloads `temporal-polyfill` 1.0.6 as a development dependency;
 consumers choose their own Temporal implementation.
 No sibling checkout is needed. `Directory.Build.props` selects the FSharp.Core
 version required by Fable.Temporal. Fable.Package.SDK packs F# sources and XML
-docs; Ionide.KeepAChangelog.Tasks reads the initial package version from
-[CHANGELOG.md](CHANGELOG.md). Its version heading is local packaging metadata,
-not a published release. Both are private build dependencies.
+docs; Ionide.KeepAChangelog.Tasks reads package versions from
+[CHANGELOG.md](CHANGELOG.md). Both are private build dependencies.

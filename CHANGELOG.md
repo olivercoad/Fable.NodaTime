@@ -1,9 +1,18 @@
 # Changelog
 
-This package has not been published. The version below supplies local packaging
-metadata and describes the current initial feature set.
-
 ## [Unreleased]
+
+### Added
+
+- Optional Fable.NodaTime.TypedJson package with validated codecs and registry support, a usage guide, and .NET/JavaScript package consumer tests.
+- Opt-in System.Text.Json converters for all seven shared value types, using validated strings without additional package dependencies.
+- Optional Fable.NodaTime.Thoth package with backend-independent Thoth.Json.Core codecs for domain types.
+- Typed DTO variants with qualified record fields, inline generic conversion functions, and a Fable.Remoting example with boundary validation.
+- SAFE serialization documentation and tests exchanging JSON between .NET and JavaScript, including precision, DST overlaps, and invalid input.
+
+### Changed
+
+- Standardized library, example, and test projects on .NET 10.
 
 ## [0.1.0] - 2026-10-24
 

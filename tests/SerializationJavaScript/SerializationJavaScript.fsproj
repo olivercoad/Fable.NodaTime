@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <DefineConstants>$(DefineConstants);FABLE_COMPILER</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../src/Fable.NodaTime.Thoth/Fable.NodaTime.Thoth.fsproj" />
+    <PackageReference Include="Thoth.Json.JavaScript" Version="0.6.0" />
+    <PackageReference Include="Fable.Remoting.Client" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../examples/Serialization/Remoting.fs" Link="Remoting.fs" />
+    <Compile Include="../Serialization/Tests.fs" Link="Tests.fs" />
+  </ItemGroup>
+</Project>

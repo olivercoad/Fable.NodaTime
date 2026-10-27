@@ -4,8 +4,14 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Fable.NodaTime/Fable.NodaTime.fsproj" />
+    <Project Path="src/Fable.NodaTime.Thoth/Fable.NodaTime.Thoth.fsproj" />
+    <Project Path="src/Fable.NodaTime.TypedJson/Fable.NodaTime.TypedJson.fsproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/Fable.NodaTime.Tests/Fable.NodaTime.Tests.fsproj" />
+    <Project Path="tests/Serialization/Serialization.fsproj" />
+    <Project Path="tests/SerializationJavaScript/SerializationJavaScript.fsproj" />
+    <Project Path="tests/TypedJson/TypedJson.fsproj" />
+    <Project Path="tests/TypedJsonJavaScript/TypedJsonJavaScript.fsproj" />
   </Folder>
 </Solution>

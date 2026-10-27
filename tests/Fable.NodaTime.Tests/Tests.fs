@@ -37,6 +37,68 @@ let instantIs text value =
 
 let sharedTests =
     [
+        "typed transport conversions",
+        fun () ->
+            let instant = utc "2024-01-01T00:00:00.123456789Z"
+            let date = LocalDate.parse "2024-02-29"
+            let time = LocalTime.parse "12:34:56.123456789"
+            let local = LocalDateTime.parse "2024-02-29T12:34:56.123456789"
+            let duration = Duration.parse "9007199254740993"
+            let zoned = ZonedDateTime.parse "2024-11-03T06:30:00.123456789Z[America/New_York]"
+            equal (Ok instant) (instant |> toNodaDTO |> fromNodaDTO)
+            equal (Ok date) (date |> toNodaDTO |> fromNodaDTO)
+            equal (Ok time) (time |> toNodaDTO |> fromNodaDTO)
+            equal (Ok local) (local |> toNodaDTO |> fromNodaDTO)
+            equal (Ok duration) (duration |> toNodaDTO |> fromNodaDTO)
+            equal (Ok zone) (zone |> toNodaDTO |> fromNodaDTO)
+            equal (Ok zoned) (zoned |> toNodaDTO |> fromNodaDTO)
+            let instantDTO: InstantDTO = toNodaDTO instant
+            let durationDTO: DurationDTO = toNodaDTO duration
+            equal "2024-01-01T00:00:00.123456789Z" instantDTO.Value
+            equal "9007199254740993" durationDTO.Value
+
+            equal
+                (Ok instant)
+                (fromNodaDTO (
+                    {
+                        InstantDTO.Value = "2024-01-01T00:00:00.123456789Z"
+                    }
+                    : InstantDTO
+                ))
+
+            isError (fromNodaDTO ({ InstantDTO.Value = "bad" }: InstantDTO))
+            isError (fromNodaDTO ({ LocalDateDTO.Value = "2023-02-29" }: LocalDateDTO))
+            isError (fromNodaDTO ({ LocalTimeDTO.Value = "24:00:00" }: LocalTimeDTO))
+
+            isError (
+                fromNodaDTO (
+                    {
+                        LocalDateTimeDTO.Value = "2024-01-01T00:00:00Z"
+                    }
+                    : LocalDateTimeDTO
+                )
+            )
+
+            isError (fromNodaDTO ({ DurationDTO.Value = "1.5" }: DurationDTO))
+            isError (fromNodaDTO ({ DateTimeZoneDTO.Value = "Not/AZone" }: DateTimeZoneDTO))
+
+            isError (
+                fromNodaDTO (
+                    {
+                        ZonedDateTimeDTO.Value = "2024-11-03T01:30:00-05:00[America/New_York]"
+                    }
+                    : ZonedDateTimeDTO
+                )
+            )
+
+            isError (fromNodaDTO ({ InstantDTO.Value = null }: InstantDTO))
+            isError (fromNodaDTO Unchecked.defaultof<InstantDTO>)
+            isError (fromNodaDTO Unchecked.defaultof<LocalDateDTO>)
+            isError (fromNodaDTO Unchecked.defaultof<LocalTimeDTO>)
+            isError (fromNodaDTO Unchecked.defaultof<LocalDateTimeDTO>)
+            isError (fromNodaDTO Unchecked.defaultof<DurationDTO>)
+            isError (fromNodaDTO Unchecked.defaultof<DateTimeZoneDTO>)
+            isError (fromNodaDTO Unchecked.defaultof<ZonedDateTimeDTO>)
         "shared scheduling domain",
         fun () ->
             let schedule: SharedScheduling.DailySchedule =
@@ -323,6 +385,14 @@ let sharedTests =
 
 #if !FABLE_COMPILER
 let conversionTests () =
+    let jsonOptions =
+        SystemTextJson.configure (System.Text.Json.JsonSerializerOptions())
+
+    let duration = Duration.parse "9007199254740993"
+    let json = System.Text.Json.JsonSerializer.Serialize(duration, jsonOptions)
+    equal "\"9007199254740993\"" json
+    equal duration (System.Text.Json.JsonSerializer.Deserialize<Duration>(json, jsonOptions))
+
     let instant = utc "2024-02-29T12:34:56.123456789Z"
     equal instant (instant |> NodaTimeConversions.toInstant |> NodaTimeConversions.fromInstant)
     let date = LocalDate.parse "2024-02-29"

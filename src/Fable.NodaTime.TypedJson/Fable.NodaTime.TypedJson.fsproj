@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Description>Backend-independent Fable.TypedJson codecs for Fable.NodaTime.</Description>
+    <ChangelogFile>$(MSBuildThisFileDirectory)../../CHANGELOG.md</ChangelogFile>
+    <PackageReadmeFile>typed-json.md</PackageReadmeFile>
+    <FablePackageType>library</FablePackageType>
+    <PackageTags>fable-dotnet;fable-javascript;datetime;nodatime;typedjson;json</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../Fable.NodaTime/Fable.NodaTime.fsproj" />
+    <PackageReference Include="Fable.TypedJson" Version="5.5.0" />
+    <PackageReference Include="Fable.Package.SDK" Version="1.4.1" PrivateAssets="all" />
+    <PackageReference Include="Ionide.KeepAChangelog.Tasks" Version="0.4.0" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Codecs.fs" />
+    <None Include="../../docs/typed-json.md" Pack="true" PackagePath="/" />
+    <None Include="../../CHANGELOG.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>
