@@ -159,29 +159,28 @@ No row implies complete NodaTime API or source compatibility.
 | NodaTime source compatibility | Not supported | Qualified F# modules and opaque shared values; existing code that opens NodaTime is not a drop-in client implementation. |
 | End-to-end SAFE/browser integration | Not verified | Shared rules and package consumers are tested on .NET and Node using `temporal-polyfill`. No full SAFE app, browser matrix, or native-Temporal test matrix is included. |
 
-## Why not a plain Temporal wrapper?
+## Is this basically just a NodaTime and Temporal wrapper?
 
-Fable.Temporal supplies typed access to Temporal; this library adds a smaller
-**cross-runtime contract** above it:
+Basically yes, but with a bit of logic to recreate NodaTime semantics on top of
+Temporal. The Temporal adapter adds:
 
-- The same domain code runs against real NodaTime on .NET and Temporal on
-  JavaScript. Neither backend's objects appear in the shared public API.
-- Opaque F# values store canonical strings or bigint nanoseconds. F# equality
-  compares values, and serialization is identical on both runtimes; callers do
-  not need Temporal object methods to compare or serialize them.
-- Parsing accepts a deliberately strict grammar and common year range, rather
-  than forwarding all inputs Temporal accepts. Zoned serialization stores a UTC
-  instant and zone to preserve an overlap occurrence.
-- `Duration` means elapsed nanoseconds only, unlike Temporal.Duration, which can
-  include calendar units. Calendar changes use explicit single-unit functions
-  with NodaTime clipping semantics; there is no shared Period type.
-- Local-to-zone conversion exposes NodaTime strict and lenient mapping. The .NET
-  backend calls NodaTime directly; the Temporal backend translates those choices.
-- Native NodaTime conversions and injectable clocks support .NET boundaries and
-  shared domain tests.
+- **Strict and lenient local-time resolution:** map NodaTime's behavior to
+  Temporal's disambiguation options, rejecting gaps and overlaps in strict mode,
+  or choosing the earlier overlap occurrence and shifting gaps forward in lenient mode.
+- **Calendar clipping:** preserve NodaTime's end-of-month behavior when adding
+  years or months, with each operation applied and validated in order.
+- **Elapsed durations:** use exact bigint nanoseconds and 24-hour days, keeping
+  calendar units out of elapsed arithmetic.
+- **Shared validation and wire formats:** enforce the supported ISO grammar and
+  year range on both runtimes, preserve nanoseconds, and serialize zoned values
+  as a UTC instant plus zone so overlap occurrences remain distinct.
+- **F# value semantics:** store canonical strings or bigint nanoseconds so shared
+  domain code can use structural equality without depending on backend objects.
 
-This is an adapter with selected semantic guarantees, not a complete exposure of
-Temporal or NodaTime. In particular, it cannot make their timezone databases equal.
+The API covers a subset of NodaTime, and timezone database differences between
+the runtimes still apply.
+
+If you find any behavior differences to standard NodaTime, please [open an issue](https://github.com/olivercoad/Fable.NodaTime/issues).
 
 ## NodaTime / Temporal semantics
 
