@@ -5,7 +5,7 @@
     <DefineConstants>$(DefineConstants);FABLE_COMPILER</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fable.NodaTime.Thoth" Version="0.1.0" />
+    <PackageReference Include="Fable.NodaTime.Thoth" Version="$(PackageUnderTestVersion)" />
     <PackageReference Include="Thoth.Json.JavaScript" Version="0.6.0" />
     <PackageReference Include="Fable.Remoting.Client" Version="8.0.0" />
   </ItemGroup>

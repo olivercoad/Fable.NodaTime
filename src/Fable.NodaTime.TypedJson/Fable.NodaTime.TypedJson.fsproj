@@ -17,5 +17,7 @@
     <Compile Include="Codecs.fs" />
     <None Include="../../docs/typed-json.md" Pack="true" PackagePath="/" />
     <None Include="../../CHANGELOG.md" Pack="true" PackagePath="/" />
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../../docs/*.md" Pack="true" PackagePath="docs/" />
   </ItemGroup>
 </Project>

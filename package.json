@@ -11,10 +11,14 @@
     "test": "pnpm run test:dotnet && pnpm run test:js && pnpm run test:serialization",
     "test:package": "node scripts/test-package.mjs",
     "format": "dotnet fantomas src/Fable.NodaTime/*.fs src/Fable.NodaTime.Thoth/*.fs src/Fable.NodaTime.TypedJson/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs examples/Serialization/*.fs tests/Serialization/Tests.fs tests/TypedJson/Tests.fs",
-    "format:check": "dotnet fantomas src/Fable.NodaTime/*.fs src/Fable.NodaTime.Thoth/*.fs src/Fable.NodaTime.TypedJson/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs examples/Serialization/*.fs tests/Serialization/Tests.fs tests/TypedJson/Tests.fs --check"
+    "format:check": "dotnet fantomas src/Fable.NodaTime/*.fs src/Fable.NodaTime.Thoth/*.fs src/Fable.NodaTime.TypedJson/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs examples/Serialization/*.fs tests/Serialization/Tests.fs tests/TypedJson/Tests.fs --check",
+    "build": "dotnet build Fable.NodaTime.slnx -c Release",
+    "pack": "dotnet pack src/Fable.NodaTime -c Release -o artifacts/packages && dotnet pack src/Fable.NodaTime.Thoth -c Release -o artifacts/packages && dotnet pack src/Fable.NodaTime.TypedJson -c Release -o artifacts/packages"
   },
   "packageManager": "pnpm@10.32.1",
   "devDependencies": {
+    "fast-xml-parser": "5.11.2",
+    "fflate": "0.8.3",
     "temporal-polyfill": "1.0.6"
   }
 }

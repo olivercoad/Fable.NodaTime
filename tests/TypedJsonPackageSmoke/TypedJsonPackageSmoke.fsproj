@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType></PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Fable.NodaTime.TypedJson" Version="0.1.0" />
+    <PackageReference Include="Fable.NodaTime.TypedJson" Version="$(PackageUnderTestVersion)" />
     <PackageReference Include="Fable.TypedJson.DotNet" Version="5.5.0" />
   </ItemGroup>
   <ItemGroup><Compile Include="../TypedJson/Tests.fs" Link="Tests.fs" /></ItemGroup>

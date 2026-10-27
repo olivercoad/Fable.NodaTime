@@ -38,7 +38,7 @@ module Booking =
 
 The server executes these rules through NodaTime; the client executes them through
 Temporal. Use `NodaTimeConversions` in server code to access the underlying NodaTime values, and
-and `TemporalConversions` in client code to access the underlying Temporal values.
+`TemporalConversions` in client code to access the underlying Temporal values.
 
 The client must provide Temporal before its compiled application loads, as described below. Inject `IClock` for rules
 that depend on the current time; use `Clocks.fixedClock` in tests.
@@ -322,3 +322,5 @@ No sibling checkout is needed. `Directory.Build.props` selects the FSharp.Core
 version required by Fable.Temporal. Fable.Package.SDK packs F# sources and XML
 docs; Ionide.KeepAChangelog.Tasks reads package versions from
 [CHANGELOG.md](CHANGELOG.md). Both are private build dependencies.
+
+[MIT license](LICENSE).
