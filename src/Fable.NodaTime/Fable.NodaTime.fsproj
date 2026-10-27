@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Description>Shared ISO datetime API for .NET and Fable, backed by NodaTime and Temporal.</Description>
+    <ChangelogFile>$(MSBuildThisFileDirectory)../../CHANGELOG.md</ChangelogFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <FablePackageType>library</FablePackageType>
+    <PackageTags>fable-dotnet;fable-javascript;datetime;nodatime;temporal</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NodaTime" Version="3.3.2" />
+    <PackageReference Include="Fable.Temporal" Version="0.1.0" />
+    <PackageReference Include="Fable.Package.SDK" Version="1.4.1" PrivateAssets="all" />
+    <PackageReference Include="Ionide.KeepAChangelog.Tasks" Version="0.4.0" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Types.fs" />
+    <Compile Include="Backend.DotNet.fs" />
+    <Compile Include="Backend.Temporal.fs" />
+    <Compile Include="Api.fs" />
+    <Compile Include="NodaTime.fs" />
+    <Compile Include="Temporal.fs" />
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+    <None Include="../../CHANGELOG.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

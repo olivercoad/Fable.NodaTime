@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><TargetFramework>net8.0</TargetFramework><OutputType>Exe</OutputType></PropertyGroup>
+  <ItemGroup><PackageReference Include="Fable.NodaTime" Version="0.1.0" /></ItemGroup>
+  <ItemGroup>
+    <Compile Include="../../examples/SharedScheduling/Schedule.fs" Link="Schedule.fs" />
+    <Compile Include="../Fable.NodaTime.Tests/Tests.fs" Link="Tests.fs" />
+  </ItemGroup>
+</Project>

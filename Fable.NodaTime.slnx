@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/examples/">
+    <Project Path="examples/SharedScheduling/SharedScheduling.fsproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Fable.NodaTime/Fable.NodaTime.fsproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Fable.NodaTime.Tests/Fable.NodaTime.Tests.fsproj" />
+  </Folder>
+</Solution>

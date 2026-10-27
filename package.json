@@ -1,0 +1,18 @@
+{
+  "name": "fable-nodatime-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:js": "dotnet fable tests/Fable.NodaTime.Tests --outDir build/js",
+    "test:dotnet": "dotnet run --project tests/Fable.NodaTime.Tests",
+    "test:js": "pnpm run build:js && node --import temporal-polyfill/global build/js/Tests.js",
+    "test": "pnpm run test:dotnet && pnpm run test:js",
+    "test:package": "node scripts/test-package.mjs",
+    "format": "dotnet fantomas src/Fable.NodaTime/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs",
+    "format:check": "dotnet fantomas src/Fable.NodaTime/*.fs tests/Fable.NodaTime.Tests/Tests.fs examples/SharedScheduling/Schedule.fs --check"
+  },
+  "packageManager": "pnpm@10.32.1",
+  "devDependencies": {
+    "temporal-polyfill": "1.0.6"
+  }
+}

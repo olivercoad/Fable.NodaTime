@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup>
+    <!-- Fable.Temporal 0.1.0 requires this FSharp.Core version. -->
+    <FSharpCoreImplicitPackageVersion>10.1.402</FSharpCoreImplicitPackageVersion>
+  </PropertyGroup>
+</Project>
